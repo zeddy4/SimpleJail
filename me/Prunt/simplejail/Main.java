@@ -107,6 +107,25 @@ public class Main extends JavaPlugin implements Listener {
 	    getConfig().set("unjailed", list);
 	}
 	saveConfig();
+	 
+	//Jail sticks    
+  @EventHandler
+  public void OnClickEntity(PlayerInteractEntityEvent e)
+  {
+    Player p = e.getPlayer();
+    ItemStack item = p.getInventory().getItemInMainHand();
+    Player rightClicked = (Player)e.getRightClicked();
+    if (((item != null) || (item.getType() != Material.AIR)) && 
+      (item.getType() == Material.STICK))
+    {
+      if ((!item.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', getConfig().getString("JailStick.Name")))) || (
+        (!(e.getRightClicked() instanceof Player)) || 
+        (p.hasPermission(getConfig().getString("JailStick.Permission"))))) {}
+      Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getConfig().getString("JailStick.Command").replace("%player%", rightClicked.getName()));
+      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.Jailed-Player").replace("%player%", rightClicked.getName()).replace("%prefix%", ChatColor.translateAlternateColorCodes('&', getConfig().getString("message.Prefix")))));
+      p.playSound(p.getLocation(), Sound.valueOf(getConfig().getString("JailStick.Sound")), 1.0F, 1.0F);
+    }
+  }
 
 	// Creates scheduler to unjail players when necessary every 1 minute
 	getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
